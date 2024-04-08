@@ -1,5 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
-import { FlatList, SafeAreaView, StyleSheet } from 'react-native';
+import { FlatList, SafeAreaView, StyleSheet, StatusBar } from 'react-native';
 
 import Item from './Item';
 
