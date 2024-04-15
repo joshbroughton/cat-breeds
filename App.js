@@ -42,10 +42,22 @@ function HomeScreen({ navigation }) {
   );
 }
 
-function DetailsScreen() {
+function DetailsScreen({ route}) {
+  const { item } = route.params;
   return (
    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-    <Text>Details Screen</Text>
+    {Object.keys(item).map((key => {
+          if (key === 'breed') {
+            return
+          } else {
+            return(
+              <View style={styles.itemContainer}>
+                <Text key={key} style={styles.features}>{`${key}`}</Text>
+                <Text>{"⭐".repeat(item[key])}</Text>
+              </View>
+            )
+          }
+        }))}
    </View>
   );
  }
@@ -73,5 +85,12 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  features: {
+    justifyContent: 'space-between'
   }
 });

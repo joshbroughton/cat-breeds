@@ -1,22 +1,24 @@
-import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight, FlatList } from 'react-native';
+import Feature from './Feature';
 
 export default function Item({ item, navigation }) {
   return(
-    <TouchableHighlight activeOpacity={0.6} underlayColor="#DDDDDD" onPress={() => navigation.navigate('Details')} >
+    <TouchableHighlight activeOpacity={0.6} underlayColor="#DDDDDD"
+      onPress={() => navigation.navigate('Details', {
+        item: item
+      })} >
       <View style={styles.item}>
         <Text style={styles.title}>{item.breed}</Text>
-        {Object.keys(item).map((key => {
-          if (key === 'breed') {
-            return
-          } else {
-            return(
-              <View style={styles.container}>
-                <Text key={key} style={styles.features}>{`${key}`}</Text>
-                <Text>{"⭐".repeat(item[key])}</Text>
-              </View>
-            )
-          }
-        }))}
+        <FlatList
+          data={Object.keys(item)}
+          renderItem={(obj) => {
+            const feature = obj.item
+            if (feature === 'breed') {
+              return
+            } else {
+              return(<Feature feature={feature} stars={item[feature]} />)
+            }
+        }}/>
       </View>
     </TouchableHighlight>
   )
