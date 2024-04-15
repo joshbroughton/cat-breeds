@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 
 import Item from './Item';
+import Feature from './Feature';
 
 import { cats, dogs } from './breeds';
 import { filterByBreed } from './util';
@@ -46,18 +47,17 @@ function DetailsScreen({ route}) {
   const { item } = route.params;
   return (
    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-    {Object.keys(item).map((key => {
-          if (key === 'breed') {
-            return
-          } else {
-            return(
-              <View style={styles.itemContainer}>
-                <Text key={key} style={styles.features}>{`${key}`}</Text>
-                <Text>{"⭐".repeat(item[key])}</Text>
-              </View>
-            )
-          }
-        }))}
+    <Text style={styles.title}>{item.breed}</Text>
+    <FlatList
+      data={Object.keys(item)}
+      renderItem={(obj) => {
+        const feature = obj.item
+        if (feature === 'breed') {
+          return
+        } else {
+          return(<Feature feature={feature} stars={item[feature]} />)
+        }
+    }}/>
    </View>
   );
  }
@@ -92,5 +92,9 @@ const styles = StyleSheet.create({
   },
   features: {
     justifyContent: 'space-between'
-  }
+  },
+  title: {
+    fontSize: 30,
+    paddingBottom: 10,
+  },
 });
