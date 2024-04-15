@@ -1,22 +1,24 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
 
-export default function Item({ item, index }) {
+export default function Item({ item, navigation }) {
   return(
-    <View style={styles.item}>
-      <Text style={styles.title}>{item.breed}</Text>
-      {Object.keys(item).map((key => {
-        if (key === 'breed') {
-          return
-        } else {
-          return(
-            <View style={styles.container}>
-              <Text key={key} style={styles.features}>{`${key}`}</Text>
-              <Text>{"⭐".repeat(item[key])}</Text>
-            </View>
-          )
-        }
-      }))}
-    </View>
+    <TouchableHighlight activeOpacity={0.6} underlayColor="#DDDDDD" onPress={() => navigation.navigate('Details')} >
+      <View style={styles.item}>
+        <Text style={styles.title}>{item.breed}</Text>
+        {Object.keys(item).map((key => {
+          if (key === 'breed') {
+            return
+          } else {
+            return(
+              <View style={styles.container}>
+                <Text key={key} style={styles.features}>{`${key}`}</Text>
+                <Text>{"⭐".repeat(item[key])}</Text>
+              </View>
+            )
+          }
+        }))}
+      </View>
+    </TouchableHighlight>
   )
 }
 

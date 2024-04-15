@@ -1,5 +1,7 @@
-import { FlatList, SafeAreaView, StyleSheet, StatusBar, TextInput } from 'react-native';
+import { FlatList, SafeAreaView, StyleSheet, StatusBar, TextInput, View, Text } from 'react-native';
 import { useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 
 import Item from './Item';
@@ -7,7 +9,7 @@ import Item from './Item';
 import { cats, dogs } from './breeds';
 import { filterByBreed } from './util';
 
-export default function App() {
+function HomeScreen({ navigation }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -31,13 +33,34 @@ export default function App() {
       />
       <FlatList
         data={selectedIndex === 0 ? filteredCats : filteredDogs}
-        renderItem={({ item, index }) => {
-          return <Item item={item} index={index} key={item.breed} />
+        renderItem={({ item }) => {
+          return <Item item={item} key={item.breed} navigation={navigation} />
         }}
         keyExtractor={ item => item.breed }
       ></FlatList>
     </SafeAreaView>
   );
+}
+
+function DetailsScreen() {
+  return (
+   <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <Text>Details Screen</Text>
+   </View>
+  );
+ }
+
+const Stack = createStackNavigator();
+
+export default function App() {
+  return (
+    <NavigationContainer>
+     <Stack.Navigator>
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Details" component={DetailsScreen} />
+     </Stack.Navigator>
+    </NavigationContainer>
+   );
 }
 
 const styles = StyleSheet.create({
