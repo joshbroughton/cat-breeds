@@ -1,8 +1,9 @@
 import { FlatList, SafeAreaView, StyleSheet, StatusBar, TextInput, View, Text } from 'react-native';
 import { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import SegmentedControl from '@react-native-segmented-control/segmented-control';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from 'react-native-vector-icons';
 
 import Item from './Item';
 import Feature from './Feature';
@@ -10,8 +11,7 @@ import Feature from './Feature';
 import { cats, dogs } from './breeds';
 import { filterByBreed } from './util';
 
-function HomeScreen({ navigation }) {
-  const [selectedIndex, setSelectedIndex] = useState(0);
+function HomeScreen({ navigation, route }) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredCats = filterByBreed(cats, searchTerm);
@@ -19,13 +19,6 @@ function HomeScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <SegmentedControl
-        values={['Cats', 'Dogs']}
-        selectedIndex={selectedIndex}
-        onChange={(event) => {
-          setSelectedIndex(event.nativeEvent.selectedSegmentIndex);
-        }}
-      />
       <TextInput
         onChangeText={setSearchTerm}
         style={styles.searchBar}
@@ -33,7 +26,7 @@ function HomeScreen({ navigation }) {
         placeholder="Search by breed!"
       />
       <FlatList
-        data={selectedIndex === 0 ? filteredCats : filteredDogs}
+        data={route.params.animal === 'dog' ? filteredDogs : filteredCats}
         renderItem={({ item }) => {
           return <Item item={item} key={item.breed} navigation={navigation} />
         }}
@@ -43,7 +36,7 @@ function HomeScreen({ navigation }) {
   );
 }
 
-function DetailsScreen({ route}) {
+function DetailsScreen({ route }) {
   const { item } = route.params;
   return (
    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -62,23 +55,73 @@ function DetailsScreen({ route}) {
   );
  }
 
-const Stack = createStackNavigator();
+ const DogStack = createNativeStackNavigator();
+ const CatStack = createNativeStackNavigator();
+
+ function DogStackScreen() {
+  return (
+    <DogStack.Navigator>
+      <DogStack.Screen
+        name="Home"
+        component={HomeScreen}
+        initialParams={{animal: 'dog'}}
+        options={{
+          headerShown: false
+        }}
+      />
+      <DogStack.Screen name="Details" component={DetailsScreen} />
+    </DogStack.Navigator>
+   );
+ }
+
+ function CatStackScreen() {
+  return (
+    <CatStack.Navigator>
+      <CatStack.Screen
+        name="Home"
+        component={HomeScreen}
+        initialParams={{animal: 'Cat'}}
+        options={{
+          headerShown: false
+        }}
+      />
+      <CatStack.Screen name="Details" component={DetailsScreen} />
+    </CatStack.Navigator>
+   );
+ }
+
+const Tab = createBottomTabNavigator();
 
 export default function App() {
-  return (
+  return(
     <NavigationContainer>
-     <Stack.Navigator>
-      <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="Details" component={DetailsScreen} />
-     </Stack.Navigator>
+      <Tab.Navigator>
+        <Tab.Screen
+          name="Dogs"
+          component={DogStackScreen}
+          options={{
+            tabBarIcon: ({ size }) => (
+              <Ionicons name='paw-outline' size={size} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Cats"
+          component={CatStackScreen}
+          options={{
+            tabBarIcon: ({ size }) => (
+              <Ionicons name='logo-octocat' size={size} />
+            ),
+          }}
+        />
+      </Tab.Navigator>
     </NavigationContainer>
-   );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight,
   },
   searchBar: {
     height: 40,
