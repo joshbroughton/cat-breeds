@@ -9,16 +9,6 @@ export default function Item({ item, navigation }) {
       })} >
       <View style={styles.item}>
         <Text style={styles.title}>{item.breed}</Text>
-        <FlatList
-          data={Object.keys(item)}
-          renderItem={(obj) => {
-            const feature = obj.item
-            if (feature === 'breed') {
-              return
-            } else {
-              return(<Feature feature={feature} stars={item[feature]} />)
-            }
-        }}/>
       </View>
     </TouchableHighlight>
   )
